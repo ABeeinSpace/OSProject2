@@ -143,6 +143,7 @@ local.properties
 
 # Compiled class file
 *.class
+logback.xml
 
 # Log file
 *.log
