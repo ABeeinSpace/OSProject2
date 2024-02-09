@@ -2,10 +2,10 @@ package com.bee;
 
 import java.util.concurrent.Semaphore;
 
-public class MyScheduler {
+public class MyBlockingQueue {
   Semaphore semaphore;
 
-  public MyScheduler(Semaphore semaphore) {
+  public MyBlockingQueue(Semaphore semaphore) {
     this.semaphore = semaphore;
   }
 
