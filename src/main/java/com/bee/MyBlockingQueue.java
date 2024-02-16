@@ -22,11 +22,13 @@ public class MyBlockingQueue<T> {
   }
 
   public synchronized void add(T element) {
-    
+    elementsQueue.add(element); 
   }
 
   public synchronized T remove() {
-    
+    T elementRemoved = elementsQueue.peek();
+    elementsQueue.remove();
+    return elementRemoved;
   }
 
   public int getNumElements() {
