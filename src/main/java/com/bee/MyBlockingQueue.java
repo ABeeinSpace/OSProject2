@@ -11,15 +11,14 @@ import java.util.concurrent.Semaphore;
  *
  */
 public class MyBlockingQueue<T> {
-  Semaphore semaphore;
-  int maxNumElements;
-  Queue<T> elementsQueue; 
+  private Semaphore semaphore;
+  private int maxNumElements;
+  private Queue<T> elementsQueue; 
 
   public MyBlockingQueue(int maxNum) {
-    int maxNumElements = maxNum;
-    elementsQueue = new LinkedList<>();
-    semaphore = new Semaphore(maxNum);
-
+    this.maxNumElements = maxNum;
+    this.elementsQueue = new LinkedList<>();
+    this.semaphore = new Semaphore(maxNum);
   }
 
   public synchronized void add(T element) {
