@@ -21,13 +21,13 @@ public class MyBlockingQueue<T> {
     this.semaphore = new Semaphore(maxNum);
   }
 
-  public synchronized void add(T element) {
-    elementsQueue.add(element); 
+  synchronized public void add(T element) {
+    elementsQueue.offer(element);
+
   }
 
-  public synchronized T remove() {
-    T elementRemoved = elementsQueue.peek();
-    elementsQueue.remove();
+  synchronized public T remove() { 
+    T elementRemoved = elementsQueue.remove();
     return elementRemoved;
   }
 
