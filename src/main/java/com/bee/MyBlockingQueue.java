@@ -29,9 +29,17 @@ public class MyBlockingQueue<T> {
     
   }
 
+  public int getNumElements() {
+    return elementsQueue.size();
+  }
+
+  public int getFreeSpace() {
+    return (maxNumElements - elementsQueue.size());
+  }
+
   @Override
   public String toString() {
-    return "MyBlockingQueue []";
+    return elementsQueue.toString();
   }
 
 }
