@@ -2,6 +2,7 @@ package com.bee;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
+
 /*
  *
  * Models a thread-safe Blocking Queue
@@ -13,7 +14,7 @@ import java.util.concurrent.Semaphore;
 public class MyBlockingQueue<T> {
   private Semaphore semaphore;
   private int maxNumElements;
-  private Queue<T> elementsQueue; 
+  private Queue<T> elementsQueue;
 
   public MyBlockingQueue(int maxNum) {
     this.maxNumElements = maxNum;
@@ -22,12 +23,31 @@ public class MyBlockingQueue<T> {
   }
 
   synchronized public void add(T element) {
+    while (getNumElements() == maxNumElements) {
+      try {
+        wait();
+      } catch (Exception e) {
+        System.out.println("Thread is too impatient!!");
+      }
+    }
+    semaphore.tryAcquire();
     elementsQueue.offer(element);
-
+    semaphore.release();
+    notify(); // Notify waiting threads that an element has been added to the queue 
   }
 
-  synchronized public T remove() { 
+  synchronized public T remove() {
+    while (elementsQueue.size() == 0) {
+      try {
+        wait();
+      } catch (Exception e) {
+        System.out.println("Thread is too impatient!!");
+      }
+    }
+    semaphore.tryAcquire();
     T elementRemoved = elementsQueue.remove();
+    semaphore.release();
+    notify();
     return elementRemoved;
   }
 
@@ -43,5 +63,4 @@ public class MyBlockingQueue<T> {
   public String toString() {
     return elementsQueue.toString();
   }
-
 }
