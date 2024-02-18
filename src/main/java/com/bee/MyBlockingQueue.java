@@ -13,7 +13,7 @@ import java.util.concurrent.Semaphore;
  *
  */
 public class MyBlockingQueue<T> {
-  private Semaphore semaphore;
+  private static Semaphore semaphore;
   private int maxNumElements;
   private Queue<T> elementsQueue;
 
@@ -23,7 +23,7 @@ public class MyBlockingQueue<T> {
   public MyBlockingQueue(int maxNum) {
     this.maxNumElements = maxNum;
     this.elementsQueue = new LinkedList<>();
-    this.semaphore = new Semaphore(maxNum);
+    semaphore = new Semaphore(maxNum);
   }
 
   /**
@@ -37,8 +37,12 @@ public class MyBlockingQueue<T> {
         System.out.println("Thread is too impatient!!");
       }
     }
-    semaphore.tryAcquire();
-    elementsQueue.offer(element);
+      try {
+          semaphore.acquire();
+      } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+      }
+      elementsQueue.offer(element);
     semaphore.release();
     notify(); // Notify waiting threads that an element has been added to the queue 
   }
@@ -47,14 +51,18 @@ public class MyBlockingQueue<T> {
    * @return The element removed from the BlockingQueue
    */
   synchronized public T remove() {
-    while (elementsQueue.size() == 0) {
+    while (elementsQueue.isEmpty()) {
       try {
         wait();
       } catch (Exception e) {
         System.out.println("Thread is too impatient!!");
       }
     }
-    semaphore.tryAcquire();
+      try {
+          semaphore.acquire();
+      } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+      }
     T elementRemoved = elementsQueue.remove();
     semaphore.release();
     notify();
