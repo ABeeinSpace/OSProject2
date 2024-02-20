@@ -18,7 +18,7 @@ public class MyBlockingQueue<T> {
   private Queue<T> elementsQueue;
 
   /**
-   * @param maxNum the maximum number of elements that can be inserted into the BlockingQueue
+   * @param maxNum The maximum number of elements that can be inserted into the BlockingQueue
    */
   public MyBlockingQueue(int maxNum) {
     this.maxNumElements = maxNum;
@@ -27,7 +27,7 @@ public class MyBlockingQueue<T> {
   }
 
   /**
-   * @param element The element to add to the BlockingQueue. element is generic, so any type can be inserted into the queue
+   * @param element The element to add to the BlockingQueue. Element is generic, so any type can be inserted into the queue
    */
   synchronized public void add(T element) {
     while (getNumElements() == maxNumElements) {
