@@ -23,7 +23,7 @@ public class MyBlockingQueue<T> {
   public MyBlockingQueue(int maxNum) {
     this.maxNumElements = maxNum;
     this.elementsQueue = new LinkedList<>();
-    semaphore = new Semaphore(maxNum);
+    semaphore = new Semaphore(100000);
   }
 
   /**
