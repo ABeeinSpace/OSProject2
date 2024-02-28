@@ -30,6 +30,11 @@ public class MyBlockingQueue<T> {
    * @param element The element to add to the BlockingQueue. Element is generic, so any type can be inserted into the queue.
    */
   synchronized public void add(T element) {
+    try {
+      semaphore.acquire();
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
     while (getNumElements() == maxNumElements) {
       try {
         wait();
@@ -37,14 +42,11 @@ public class MyBlockingQueue<T> {
         System.out.println("Thread is too impatient!!");
       }
     }
-      try {
-          semaphore.acquire();
-      } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-      }
-      elementsQueue.offer(element);
+
+    elementsQueue.offer(element);
     semaphore.release();
-    notify(); // Notify waiting threads that an element has been added to the queue 
+    notify(); // Notify waiting threads that an element has been added to the
+              // queue
   }
 
   /**
@@ -59,14 +61,14 @@ public class MyBlockingQueue<T> {
         System.out.println("Thread is too impatient!!");
       }
     }
-      try {
-          semaphore.acquire();
-      } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-      }
+    try {
+      semaphore.acquire();
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
     T elementRemoved = elementsQueue.remove();
     semaphore.release();
-    notify();
+    notify(); // Notify the next waiting thread that there is space in the queue
     return elementRemoved;
   }
 
