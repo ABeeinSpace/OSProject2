@@ -18,16 +18,20 @@ public class MyBlockingQueue<T> {
   private Queue<T> elementsQueue;
 
   /**
-   * @param maxNum The maximum number of elements that can be inserted into the BlockingQueue.
+   * @param maxNum The maximum number of elements that can be inserted into the
+   *               BlockingQueue.
    */
   public MyBlockingQueue(int maxNum) {
     this.maxNumElements = maxNum;
     this.elementsQueue = new LinkedList<>();
-    semaphore = new Semaphore(100000); // This is just an arbitrarily high number. I increased it until things started to break, then reduced until they stopped breaking. 
+    semaphore = new Semaphore(100000); // This is just an arbitrarily high number. I
+                                       // increased it until things started to break,
+                                       // then reduced until they stopped breaking.
   }
 
   /**
-   * @param element The element to add to the BlockingQueue. Element is generic, so any type can be inserted into the queue.
+   * @param element The element to add to the BlockingQueue. Element is generic,
+   *                so any type can be inserted into the queue.
    */
   synchronized public void add(T element) {
     try {
@@ -52,24 +56,29 @@ public class MyBlockingQueue<T> {
   /**
    * @return The element removed from the BlockingQueue.
    */
-  //TODO: Fix the race/deadlock in this function
+  // TODO: Fix the race/deadlock in this function
   synchronized public T remove() {
-    while (elementsQueue.isEmpty()) {
+    while (elementsQueue.isEmpty()) { // if the queue is empty, we need to block
+                                      // until there are elements to remove.
       try {
-        wait();
-      } catch (Exception e) {
-        System.out.println("Thread is too impatient!!");
+        wait(); // Wait until we're notified that there are elements in the
+                // queue we can remove.
+      } catch (InterruptedException e) { // Catch a thrown InterruptedException.
+                                         // Required for the call to wait().
+        System.out.println("Thread is too impatient!! Crashing now... ");
       }
     }
     try {
       semaphore.acquire();
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+    } catch (InterruptedException e) { // Catch a thrown InterruptedException.
+                                       // Required for the call to acquire().
+      System.out.println("Thread is too impatient!! Crashing now... ");
     }
     T elementRemoved = elementsQueue.remove();
     semaphore.release();
-    notify(); // Notify the next waiting thread that there is space in the queue
-    return elementRemoved;
+    notify(); // Notify the next waiting thread that there is space in the
+              // queue.
+    return elementRemoved; // Return the element we just removed.
   }
 
   /**
@@ -91,7 +100,6 @@ public class MyBlockingQueue<T> {
   /**
    * @param N/A
    * @return A string representation of the underlying linked list.
-   *
    */
   @Override
   public String toString() {
