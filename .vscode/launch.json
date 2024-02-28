@@ -3,7 +3,7 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Launch Main Class (w/ Assertions)",
+      "name": "Launch Main (w/ Assertions)",
       "request": "launch",
       "mainClass": "com.bee.App",
       "projectName": "OSProject2",
@@ -11,7 +11,16 @@
     },
     {
       "type": "java",
-      "name": "Launch Main Class",
+      "name": "Launch Main (w/ Assertions, reduced ST)",
+      "request": "launch",
+      "mainClass": "com.bee.App",
+      "projectName": "OSProject2",
+      "vmArgs": "-ea",
+      "args":"500"
+    },
+    {
+      "type": "java",
+      "name": "Launch Main",
       "request": "launch",
       "mainClass": "com.bee.App",
       "projectName": "OSProject2"
