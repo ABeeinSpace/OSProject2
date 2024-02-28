@@ -18,16 +18,16 @@ public class MyBlockingQueue<T> {
   private Queue<T> elementsQueue;
 
   /**
-   * @param maxNum The maximum number of elements that can be inserted into the BlockingQueue
+   * @param maxNum The maximum number of elements that can be inserted into the BlockingQueue.
    */
   public MyBlockingQueue(int maxNum) {
     this.maxNumElements = maxNum;
     this.elementsQueue = new LinkedList<>();
-    semaphore = new Semaphore(100000);
+    semaphore = new Semaphore(100000); // This is just an arbitrarily high number. I increased it until things started to break, then reduced until they stopped breaking. 
   }
 
   /**
-   * @param element The element to add to the BlockingQueue. Element is generic, so any type can be inserted into the queue
+   * @param element The element to add to the BlockingQueue. Element is generic, so any type can be inserted into the queue.
    */
   synchronized public void add(T element) {
     while (getNumElements() == maxNumElements) {
@@ -48,8 +48,9 @@ public class MyBlockingQueue<T> {
   }
 
   /**
-   * @return The element removed from the BlockingQueue
+   * @return The element removed from the BlockingQueue.
    */
+  //TODO: Fix the race/deadlock in this function
   synchronized public T remove() {
     while (elementsQueue.isEmpty()) {
       try {
@@ -70,19 +71,26 @@ public class MyBlockingQueue<T> {
   }
 
   /**
-   * @return The number of elements in the BlockingQueue
+   * @param N/A
+   * @return The number of elements in the BlockingQueue.
    */
   public int getNumElements() {
     return elementsQueue.size();
   }
 
   /**
-   * @return The number of free spaces left in the BlockingQueue
+   * @param N/A
+   * @return The number of free spaces left in the BlockingQueue.
    */
   public int getFreeSpace() {
     return (maxNumElements - elementsQueue.size());
   }
 
+  /**
+   * @param N/A
+   * @return A string representation of the underlying linked list.
+   *
+   */
   @Override
   public String toString() {
     return elementsQueue.toString();
