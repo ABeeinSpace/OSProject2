@@ -1,4 +1,4 @@
-package com.bee;
+package com.bee; // <-- REMOVE BEFORE SUBMISSION
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -56,7 +56,6 @@ public class MyBlockingQueue<T> {
   /**
    * @return The element removed from the BlockingQueue.
    */
-  // TODO: Fix the race/deadlock in this function
   synchronized public T remove() {
     while (elementsQueue.isEmpty()) { // if the queue is empty, we need to block
                                       // until there are elements to remove.
@@ -74,7 +73,10 @@ public class MyBlockingQueue<T> {
                                        // Required for the call to acquire().
       System.out.println("Thread is too impatient!! Crashing now... ");
     }
-    T elementRemoved = elementsQueue.remove();
+    T elementRemoved = elementsQueue
+        .remove(); // We probably could just return here, but we'd end up
+                   // having to notify() before the element is actually
+                   // removed. That smeeells like a race to me
     semaphore.release();
     notify(); // Notify the next waiting thread that there is space in the
               // queue.
@@ -86,7 +88,8 @@ public class MyBlockingQueue<T> {
    * @return The number of elements in the BlockingQueue.
    */
   public int getNumElements() {
-    return elementsQueue.size();
+    return elementsQueue.size(); // Go to the underlying Queue, grab its size,
+                                 // and simply return that.
   }
 
   /**
@@ -94,7 +97,10 @@ public class MyBlockingQueue<T> {
    * @return The number of free spaces left in the BlockingQueue.
    */
   public int getFreeSpace() {
-    return (maxNumElements - elementsQueue.size());
+    return (maxNumElements -
+        elementsQueue
+            .size()); // Our free space is the maximum number of elements we can
+                      // hold subtracted from what we're currently holding.
   }
 
   /**
