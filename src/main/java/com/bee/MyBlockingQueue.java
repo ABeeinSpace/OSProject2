@@ -76,7 +76,7 @@ public class MyBlockingQueue<T> {
     T elementRemoved = elementsQueue
         .remove(); // We probably could just return here, but we'd end up
                    // having to notify() before the element is actually
-                   // removed. That smeeells like a race to me
+                   // removed. That smeeells like a bad time to me
     semaphore.release();
     notify(); // Notify the next waiting thread that there is space in the
               // queue.
