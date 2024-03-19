@@ -2,7 +2,7 @@ package com.bee; // <-- REMOVE BEFORE SUBMISSION
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.Semaphore;
+// import java.util.concurrent.Semaphore;
 
 /*
  *
@@ -13,7 +13,7 @@ import java.util.concurrent.Semaphore;
  *
  */
 public class MyBlockingQueue<T> {
-  private static Semaphore semaphore;
+  // private static Semaphore semaphore;
   private int maxNumElements;
   private Queue<T> elementsQueue;
 
@@ -24,7 +24,7 @@ public class MyBlockingQueue<T> {
   public MyBlockingQueue(int maxNum) {
     this.maxNumElements = maxNum;
     this.elementsQueue = new LinkedList<>();
-    semaphore = new Semaphore(10000); // This is just an arbitrarily high number. I
+    // semaphore = new Semaphore(10000); // This is just an arbitrarily high number. I
                                       // increased it until things started to break,
                                       // then reduced until they stopped breaking.
   }
@@ -34,11 +34,11 @@ public class MyBlockingQueue<T> {
    *                so any type can be inserted into the queue.
    */
   synchronized public void add(T element) {
-    try {
-      semaphore.acquire();
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
+    // try {
+    //   semaphore.acquire();
+    // } catch (InterruptedException e) {
+    //   throw new RuntimeException(e);
+    // }
     while (getNumElements() == maxNumElements) {
       try {
         wait();
@@ -48,7 +48,7 @@ public class MyBlockingQueue<T> {
     }
 
     elementsQueue.offer(element);
-    semaphore.release();
+    // semaphore.release();
     notify(); // Notify waiting threads that an element has been added to the
               // queue
   }
@@ -57,12 +57,12 @@ public class MyBlockingQueue<T> {
    * @return The element removed from the BlockingQueue.
    */
   synchronized public T remove() {
-    try {
-      semaphore.acquire();
-    } catch (InterruptedException e) { // Catch a thrown InterruptedException.
-                                       // Required for the call to acquire().
-      System.err.println("Thread is too impatient!! Crashing now... ");
-    }
+    // try {
+    //   semaphore.acquire();
+    // } catch (InterruptedException e) { // Catch a thrown InterruptedException.
+    //                                    // Required for the call to acquire().
+    //   System.err.println("Thread is too impatient!! Crashing now... ");
+    // }
 
     while (elementsQueue.isEmpty()) { // if the queue is empty, we need to block
                                       // until there are elements to remove.
@@ -79,7 +79,7 @@ public class MyBlockingQueue<T> {
         .remove(); // We probably could just return here, but we'd end up
                    // having to notify() before the element is actually
                    // removed. That smeeells like a bad time to me
-    semaphore.release();
+    // semaphore.release();
     notify(); // Notify the next waiting thread that there is space in the
               // queue.
     return elementRemoved; // Return the element we just removed.
