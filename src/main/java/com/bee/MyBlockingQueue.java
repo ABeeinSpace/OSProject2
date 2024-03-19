@@ -24,9 +24,9 @@ public class MyBlockingQueue<T> {
   public MyBlockingQueue(int maxNum) {
     this.maxNumElements = maxNum;
     this.elementsQueue = new LinkedList<>();
-    semaphore = new Semaphore(100000); // This is just an arbitrarily high number. I
-                                       // increased it until things started to break,
-                                       // then reduced until they stopped breaking.
+    semaphore = new Semaphore(10000); // This is just an arbitrarily high number. I
+                                      // increased it until things started to break,
+                                      // then reduced until they stopped breaking.
   }
 
   /**
@@ -57,6 +57,13 @@ public class MyBlockingQueue<T> {
    * @return The element removed from the BlockingQueue.
    */
   synchronized public T remove() {
+    try {
+      semaphore.acquire();
+    } catch (InterruptedException e) { // Catch a thrown InterruptedException.
+                                       // Required for the call to acquire().
+      System.err.println("Thread is too impatient!! Crashing now... ");
+    }
+
     while (elementsQueue.isEmpty()) { // if the queue is empty, we need to block
                                       // until there are elements to remove.
       try {
@@ -64,15 +71,10 @@ public class MyBlockingQueue<T> {
                 // queue we can remove.
       } catch (InterruptedException e) { // Catch a thrown InterruptedException.
                                          // Required for the call to wait().
-        System.out.println("Thread is too impatient!! Crashing now... ");
+        System.err.println("Thread is too impatient!! Crashing now... ");
       }
     }
-    try {
-      semaphore.acquire();
-    } catch (InterruptedException e) { // Catch a thrown InterruptedException.
-                                       // Required for the call to acquire().
-      System.out.println("Thread is too impatient!! Crashing now... ");
-    }
+
     T elementRemoved = elementsQueue
         .remove(); // We probably could just return here, but we'd end up
                    // having to notify() before the element is actually
