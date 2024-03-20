@@ -2,6 +2,7 @@ package com.bee; // <-- REMOVE BEFORE SUBMISSION
 
 import java.util.*;
 import java.util.concurrent.*;
+
 /*
  *
  * Models a thread-safe Blocking Queue
@@ -79,7 +80,7 @@ public class MyBlockingQueue<T> {
         .remove(); // We probably could just return here, but we'd end up
                    // having to notify() before the element is actually
                    // removed. That smeeells like a bad time to me
-    
+
     innerSemaphore.release();
     outerSemaphore.release();
     // notify(); // Notify the next waiting thread that there is space in the
