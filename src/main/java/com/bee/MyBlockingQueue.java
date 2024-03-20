@@ -1,9 +1,7 @@
 package com.bee; // <-- REMOVE BEFORE SUBMISSION
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.Semaphore;
-
+import java.util.*;
+import java.util.concurrent.*;
 /*
  *
  * Models a thread-safe Blocking Queue
@@ -70,18 +68,19 @@ public class MyBlockingQueue<T> {
                                       // until there are elements to remove.
       try {
         innerSemaphore.acquire(); // Wait until we're notified that there are
-                                   // elements in the queue we can remove.
+                                  // elements in the queue we can remove.
       } catch (InterruptedException e) { // Catch a thrown InterruptedException.
                                          // Required for the call to wait().
         System.err.println("Thread is too impatient!! Crashing now... ");
       }
     }
 
-
     T elementRemoved = elementsQueue
         .remove(); // We probably could just return here, but we'd end up
                    // having to notify() before the element is actually
                    // removed. That smeeells like a bad time to me
+    
+    innerSemaphore.release();
     outerSemaphore.release();
     // notify(); // Notify the next waiting thread that there is space in the
     // queue.
